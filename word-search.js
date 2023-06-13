@@ -106,6 +106,35 @@ fetch('words.json')
       resultCountElement.textContent = `Total results found: ${words.length}`;
     }
 
+    //start-new
+    
+    function countConsonants(words) {
+      // Count the occurrences of consonants in the words
+      const consonantCount = {};
+
+      words.forEach(word => {
+        const consonants = word.replace(/[aeiou]/gi, '');
+        for (let i = 0; i < consonants.length; i++) {
+          const consonant = consonants[i].toLowerCase();
+          consonantCount[consonant] = consonantCount[consonant] ? consonantCount[consonant] + 1 : 1;
+        }
+      });
+
+      // Display the consonant count
+      const consonantCountElement = document.getElementById('consonantCount');
+      consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
+      const consonantList = document.createElement('ul');
+      Object.keys(consonantCount).forEach(consonant => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${consonant}: ${consonantCount[consonant]}`;
+        consonantList.appendChild(listItem);
+      });
+      consonantCountElement.appendChild(consonantList);
+    }
+    
+    //end-new
+    
+    
     function clearSearchInputs() {
       document.getElementById('includeLetters').value = '';
       document.getElementById('excludeLetters').value = '';
