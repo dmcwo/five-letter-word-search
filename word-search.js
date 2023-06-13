@@ -105,7 +105,7 @@ fetch('words.json')
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = `Total results found: ${words.length}`;
     }
-
+    
     //start-new
     
     function countConsonants(words) {
@@ -134,7 +134,6 @@ fetch('words.json')
     
     //end-new
     
-    
     function clearSearchInputs() {
       document.getElementById('includeLetters').value = '';
       document.getElementById('excludeLetters').value = '';
@@ -156,6 +155,9 @@ fetch('words.json')
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = '';
     }
+    
+    // Load the JSON data
+    countConsonants(wordList);
   })
   .catch(error => {
     console.error(error);
