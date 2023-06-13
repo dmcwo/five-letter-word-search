@@ -105,11 +105,10 @@ fetch('words.json')
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = `Total results found: ${words.length}`;
 
-      // Count and display the consonants
+      // Count and display the consonants and vowels
       countConsonants(words);
+      countVowels(words);
     }
-    
-    //start-new
     
     function countConsonants(words) {
       // Count the occurrences of consonants in the words
@@ -133,7 +132,27 @@ fetch('words.json')
       consonantCountElement.textContent = consonantCountText;
     }
     
-    //end-new
+    function countVowels(words) {
+      // Count the occurrences of vowels in the words
+      const vowelCount = {};
+
+      words.forEach(word => {
+        const vowels = word.replace(/[^aeiou]/gi, '');
+        for (let i = 0; i < vowels.length; i++) {
+          const vowel = vowels[i].toLowerCase();
+          vowelCount[vowel] = vowelCount[vowel] ? vowelCount[vowel] + 1 : 1;
+        }
+      });
+
+      // Sort the vowels by frequency
+      const sortedVowels = Object.entries(vowelCount).sort((a, b) => b[1] - a[1]);
+
+      // Display the vowel count
+      const vowelCountElement = document.getElementById('vowelCount');
+      vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
+      const vowelCountText = sortedVowels.map(entry => `${entry[0]}: ${entry[1]}`).join(' | ');
+      vowelCountElement.textContent = vowelCountText;
+    }
     
     function clearSearchInputs() {
       document.getElementById('includeLetters').value = '';
@@ -155,6 +174,14 @@ fetch('words.json')
       // Clear total results count
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = '';
+
+      // Clear consonant count
+      const consonantCountElement = document.getElementById('consonantCount');
+      consonantCountElement.innerHTML = '';
+
+      // Clear vowel count
+      const vowelCountElement = document.getElementById('vowelCount');
+      vowelCountElement.innerHTML = '';
     }
   })
   .catch(error => {
