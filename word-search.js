@@ -12,7 +12,7 @@ fetch('words.json')
 
     // Use the wordList in your code
     // ...
-    
+
     const form = document.getElementById('wordSearchForm');
     const resultsContainer = document.getElementById('results');
     const clearButton = document.getElementById('clearButton');
@@ -66,7 +66,7 @@ fetch('words.json')
         if (letterPosition.some((letter, position) => letter && word.charAt(position).toLowerCase() !== letter.toLowerCase())) {
           return false;
         }
-          
+
         // Check if any excluded letters are in their respective positions
         for (let i = 0; i < excludeLetterPositions.length; i++) {
           const position = i + 1;
@@ -83,6 +83,8 @@ fetch('words.json')
 
       // Display the results
       displayResults(filteredWords);
+      countConsonants(filteredWords);
+      countVowels(filteredWords);
     }
 
     function displayResults(words) {
@@ -104,12 +106,8 @@ fetch('words.json')
       // Display the total count
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = `Total results found: ${words.length}`;
-
-      // Count and display the consonants and vowels
-      countConsonants(words);
-      countVowels(words);
     }
-    
+
     function countConsonants(words) {
       // Count the occurrences of consonants in the words
       const consonantCount = {};
@@ -122,16 +120,20 @@ fetch('words.json')
         }
       });
 
-      // Sort the consonants by frequency
-      const sortedConsonants = Object.entries(consonantCount).sort((a, b) => b[1] - a[1]);
-
       // Display the consonant count
       const consonantCountElement = document.getElementById('consonantCount');
       consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
-      const consonantCountText = sortedConsonants.map(entry => `${entry[0]}: ${entry[1]}`).join(' | ');
-      consonantCountElement.textContent = consonantCountText;
+      const consonantList = document.createElement('ul');
+      Object.keys(consonantCount)
+        .sort((a, b) => consonantCount[b] - consonantCount[a])
+        .forEach(consonant => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `${consonant}: ${consonantCount[consonant]}`;
+          consonantList.appendChild(listItem);
+        });
+      consonantCountElement.appendChild(consonantList);
     }
-    
+
     function countVowels(words) {
       // Count the occurrences of vowels in the words
       const vowelCount = {};
@@ -144,16 +146,20 @@ fetch('words.json')
         }
       });
 
-      // Sort the vowels by frequency
-      const sortedVowels = Object.entries(vowelCount).sort((a, b) => b[1] - a[1]);
-
       // Display the vowel count
       const vowelCountElement = document.getElementById('vowelCount');
       vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
-      const vowelCountText = sortedVowels.map(entry => `${entry[0]}: ${entry[1]}`).join(' | ');
-      vowelCountElement.textContent = vowelCountText;
+      const vowelList = document.createElement('ul');
+      Object.keys(vowelCount)
+        .sort((a, b) => vowelCount[b] - vowelCount[a])
+        .forEach(vowel => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `${vowel}: ${vowelCount[vowel]}`;
+          vowelList.appendChild(listItem);
+        });
+      vowelCountElement.appendChild(vowelList);
     }
-    
+
     function clearSearchInputs() {
       document.getElementById('includeLetters').value = '';
       document.getElementById('excludeLetters').value = '';
@@ -167,7 +173,7 @@ fetch('words.json')
       document.getElementById('excludeLetter3').value = '';
       document.getElementById('excludeLetter4').value = '';
       document.getElementById('excludeLetter5').value = '';
-      
+
       // Clear search results
       resultsContainer.innerHTML = '';
 
