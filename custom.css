@@ -1,0 +1,15 @@
+/* custom.css */
+
+/* CSS rules */
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+}
+
+.insearchterms {
+  background-color: yellow;
+  font-weight: bold;
+}
