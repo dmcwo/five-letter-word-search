@@ -1,85 +1,194 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Five Letter Word Search</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Add your custom CSS file here -->
-</head>
-<body>
-  <header>
-    <h1>5 letter word search</h1>
-  </header>
+// Load the JSON data
+fetch('words.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to fetch word list.');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Extract the words from the JSON data
+    const wordList = data.map(item => item.word);
 
-  <main>
-    <form id="wordSearchForm">
-  
-<h2>Include Letters</h2>
-    <h3>Any letter position:</h3>
-        
-        <label for="includeLetters">Include Letters:</label>
-  <input type="text" id="includeLetters" />
-
-    <h3>Specific letter position:</h3>
-
-    <label for="letter1">1:</label>
-    <input type="text" id="letter1" />
-        
-    <label for="letter2">2:</label>
-    <input type="text" id="letter2" />
-        
-    <label for="letter3">3:</label>
-        <input type="text" id="letter3" />
-        
-    <label for="letter4">4:</label>
-        <input type="text" id="letter4" />
+    // Use the wordList in your code
+    // ...
     
-    <label for="letter5">5:</label>
-        <input type="text" id="letter5" />
-        
-    <h2>Exclude Letters</h2>
-        <h3>Any letter position:</h3>
-        
-            <label for="excludeLetters">Exclude Letters:</label>
-            <input type="text" id="excludeLetters" />
-        
-        <h3>Specific letter position:</h3>
-        
-            <label for="excludeLetter1">Not 1:</label>
-            <input type="text" id="excludeLetter1" />
-        
-            <label for="excludeLetter2">Not 2:</label>
-            <input type="text" id="excludeLetter2" />
-        
-            <label for="excludeLetter3">Not 3:</label>
-            <input type="text" id="excludeLetter3" />
-        
-            <label for="excludeLetter4">Not 4:</label>
-            <input type="text" id="excludeLetter4" />
-        
-            <label for="excludeLetter5">Not 5:</label>
-            <input type="text" id="excludeLetter5" />
-        
-<br>
-  <button type="submit">Search</button>
-        <br>
-<button type="button" id="clearButton">Clear Search</button>
+    const form = document.getElementById('wordSearchForm');
+    const resultsContainer = document.getElementById('results');
+    const clearButton = document.getElementById('clearButton');
 
-</form>
+    clearButton.addEventListener('click', function () {
+      clearSearchInputs();
+      console.log('Clear button clicked'); // Debugging statement
+      countConsonants(wordList);
+      countVowels(wordList);
+    });
 
-<div id="resultCount"></div>
+    form.addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent form submission
+      performSearch();
+    });
+
+    clearButton.addEventListener('click', function () {
+      clearSearchInputs();
+    });
+
+    // Perform the initial count of consonants and vowels
+    countConsonants(wordList);
+    countVowels(wordList);
+
+    function performSearch() {
+      // Get the search parameters
+      const includeLetters = document.getElementById('includeLetters').value;
+      const excludeLetters = document.getElementById('excludeLetters').value;
+      const letterPosition = [
+        document.getElementById('letter1').value,
+        document.getElementById('letter2').value,
+        document.getElementById('letter3').value,
+        document.getElementById('letter4').value,
+        document.getElementById('letter5').value,
+      ];
+      const excludeLetterPositions = [
+        document.getElementById('excludeLetter1').value,
+        document.getElementById('excludeLetter2').value,
+        document.getElementById('excludeLetter3').value,
+        document.getElementById('excludeLetter4').value,
+        document.getElementById('excludeLetter5').value,
+      ];
+
+      // Perform the search
+      const filteredWords = wordList.filter(word => {
+        // Check if word includes the specified letters
+        if (includeLetters && !Array.from(includeLetters).every(letter => word.includes(letter))) {
+          return false;
+        }
+
+        // Check if word contains any excluded letters
+        if (excludeLetters && [...excludeLetters].some(letter => word.includes(letter))) {
+          return false;
+        }
+
+        // Check if the specified letter is in the specified position
+        if (letterPosition.some((letter, position) => letter && word.charAt(position).toLowerCase() !== letter.toLowerCase())) {
+          return false;
+        }
+          
+        // Check if any excluded letters are in their respective positions
+        for (let i = 0; i < excludeLetterPositions.length; i++) {
+          const position = i + 1;
+          const excludeLetters = excludeLetterPositions[i];
+
+          if (excludeLetters && excludeLetters.includes(word.charAt(position - 1))) {
+            return false;
+          }
+        }
+
+        // All criteria match, include the word in the results
+        return true;
+      });
+
+      // Display the results
+      displayResults(filteredWords);
+      countConsonants(filteredWords);
+      countVowels(filteredWords);
+    }
+
+    function displayResults(words) {
+      // Clear previous results
+      resultsContainer.innerHTML = '';
+
+      if (words.length === 0) {
+        resultsContainer.textContent = 'No matching words found.';
+      } else {
+        const list = document.createElement('ul');
+        words.forEach(word => {
+          const listItem = document.createElement('li');
+          listItem.textContent = word;
+          list.appendChild(listItem);
+        });
+        resultsContainer.appendChild(list);
+      }
+
+      // Display the total count
+      const resultCountElement = document.getElementById('resultCount');
+      resultCountElement.textContent = `Total results found: ${words.length}`;
+    }
+
+    function countConsonants(words) {
+      // Count the occurrences of consonants in the words
+      const consonantCount = {};
+
+      words.forEach(word => {
+        const consonants = word.replace(/[aeiou]/gi, '');
+        for (let i = 0; i < consonants.length; i++) {
+          const consonant = consonants[i].toLowerCase();
+          consonantCount[consonant] = consonantCount[consonant] ? consonantCount[consonant] + 1 : 1;
+        }
+      });
+
+      // Sort the consonants by frequency
+      const sortedConsonants = Object.entries(consonantCount).sort((a, b) => b[1] - a[1]);
+
+      // Display the consonant count
+      const consonantCountElement = document.getElementById('consonantCount');
+      consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
+      const consonantCountText = sortedConsonants.map(entry => `${entry[0]}: ${entry[1]}`).join(' | ');
+      consonantCountElement.textContent = consonantCountText;
+    }
+
+    function countVowels(words) {
+      // Count the occurrences of vowels in the words
+      const vowelCount = {};
+
+      words.forEach(word => {
+        const vowels = word.replace(/[^aeiou]/gi, '');
+        for (let i = 0; i < vowels.length; i++) {
+          const vowel = vowels[i].toLowerCase();
+          vowelCount[vowel] = vowelCount[vowel] ? vowelCount[vowel] + 1 : 1;
+        }
+      });
+
+      // Sort the vowels by frequency
+      const sortedVowels = Object.entries(vowelCount).sort((a, b) => b[1] - a[1]);
+
+      // Display the vowel count
+      const vowelCountElement = document.getElementById('vowelCount');
+      vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
+      const vowelCountText = sortedVowels.map(entry => `${entry[0]}: ${entry[1]}`).join(' | ');
+      vowelCountElement.textContent = vowelCountText;
+    }
+
+    function clearSearchInputs() {
+      document.getElementById('includeLetters').value = '';
+      document.getElementById('excludeLetters').value = '';
+      document.getElementById('letter1').value = '';
+      document.getElementById('letter2').value = '';
+      document.getElementById('letter3').value = '';
+      document.getElementById('letter4').value = '';
+      document.getElementById('letter5').value = '';
+      document.getElementById('excludeLetter1').value = '';
+      document.getElementById('excludeLetter2').value = '';
+      document.getElementById('excludeLetter3').value = '';
+      document.getElementById('excludeLetter4').value = '';
+      document.getElementById('excludeLetter5').value = '';
       
-<div id="consonantCount"></div>
-    
- <div id="vowelCount"></div>
+      // Clear search results
+      resultsContainer.innerHTML = '';
 
-<div id="results"></div>
+      // Clear total results count
+      const resultCountElement = document.getElementById('resultCount');
+      resultCountElement.textContent = '';
 
-  </main>
+      // Clear consonant count
+      const consonantCountElement = document.getElementById('consonantCount');
+      consonantCountElement.innerHTML = '';
 
-  <footer>
-  </footer>
-
-  <script src="word-search.js"></script> <!-- Add your custom JavaScript file here -->
-</body>
-</html>
+      // Clear vowel count
+      const vowelCountElement = document.getElementById('vowelCount');
+      vowelCountElement.innerHTML = '';
+    }
+  })
+  .catch(error => {
+    console.error(error);
+    // Handle any error that occurred during the fetch
+  });
