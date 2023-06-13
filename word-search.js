@@ -104,6 +104,9 @@ fetch('words.json')
       // Display the total count
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = `Total results found: ${words.length}`;
+
+      // Count and display the consonants
+      countConsonants(words);
     }
     
     //start-new
@@ -120,16 +123,14 @@ fetch('words.json')
         }
       });
 
+      // Sort the consonants by frequency
+      const sortedConsonants = Object.entries(consonantCount).sort((a, b) => b[1] - a[1]);
+
       // Display the consonant count
       const consonantCountElement = document.getElementById('consonantCount');
       consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
-      const consonantList = document.createElement('ul');
-      Object.keys(consonantCount).forEach(consonant => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${consonant}: ${consonantCount[consonant]}`;
-        consonantList.appendChild(listItem);
-      });
-      consonantCountElement.appendChild(consonantList);
+      const consonantCountText = sortedConsonants.map(entry => `${entry[0]}: ${entry[1]}`).join(' | ');
+      consonantCountElement.textContent = consonantCountText;
     }
     
     //end-new
@@ -155,9 +156,6 @@ fetch('words.json')
       const resultCountElement = document.getElementById('resultCount');
       resultCountElement.textContent = '';
     }
-    
-    // Load the JSON data
-    countConsonants(wordList);
   })
   .catch(error => {
     console.error(error);
