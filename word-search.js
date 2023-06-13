@@ -18,12 +18,13 @@ fetch('words.json')
     const clearButton = document.getElementById('clearButton');
     const consonantCountElement = document.getElementById('consonantCount');
     const vowelCountElement = document.getElementById('vowelCount');
-    let searchTerms = []; // Initialize empty array for search terms
+    let searchTerms = [];
 
     clearButton.addEventListener('click', function () {
       clearSearchInputs();
       countConsonants(wordList);
       countVowels(wordList);
+      applySearchTermsStyle(searchTerms);
       console.log('Clear button clicked'); // Debugging statement
     });
 
@@ -36,6 +37,7 @@ fetch('words.json')
       clearSearchInputs();
       countConsonants(wordList);
       countVowels(wordList);
+      applySearchTermsStyle(searchTerms);
     });
 
     function performSearch() {
@@ -95,32 +97,46 @@ fetch('words.json')
       displayResults(filteredWords);
       countConsonants(filteredWords);
       countVowels(filteredWords);
-
-      // Apply CSS class to search terms
       applySearchTermsStyle(searchTerms);
     }
 
-    function applySearchTermsStyle(terms) {
-      const letters = document.getElementsByClassName('letter');
+    function applySearchTermsStyle(searchTerms) {
+      const resultContainer = document.getElementById('results');
+      const resultItems = resultContainer.getElementsByTagName('li');
 
-      // Remove the "insearchterms" class from all letters
-      for (let i = 0; i < letters.length; i++) {
-        letters[i].classList.remove('insearchterms');
-      }
+      Array.from(resultItems).forEach(item => {
+        const word = item.textContent.toLowerCase();
 
-      // Apply the "insearchterms" class to user-entered letters
-      for (let i = 0; i < terms.length; i++) {
-        const term = terms[i];
-        if (term) {
-          const letterElement = document.getElementById(`letter${i + 1}`);
-          if (letterElement) {
-            const letter = letterElement.value.toLowerCase();
-            if (letter && letters[letter.charCodeAt(0) - 97]) {
-              letters[letter.charCodeAt(0) - 97].classList.add('insearchterms');
-            }
+        // Apply CSS class to letters in the word that match the search terms
+        searchTerms.forEach(term => {
+          if (term && word.includes(term.toLowerCase())) {
+            const regex = new RegExp(term, 'gi');
+            const highlightedWord = word.replace(regex, `<span class="insearchterms">${term}</span>`);
+            item.innerHTML = highlightedWord;
           }
-        }
+        });
+      });
+    }
+
+    function displayResults(words) {
+      // Clear previous results
+      resultsContainer.innerHTML = '';
+
+      if (words.length === 0) {
+        resultsContainer.textContent = 'No matching words found.';
+      } else {
+        const list = document.createElement('ul');
+        words.forEach(word => {
+          const listItem = document.createElement('li');
+          listItem.textContent = word;
+          list.appendChild(listItem);
+        });
+        resultsContainer.appendChild(list);
       }
+
+      // Display the total count
+      const resultCountElement = document.getElementById('resultCount');
+      resultCountElement.textContent = `Total results found: ${words.length}`;
     }
 
     function countConsonants(words) {
@@ -139,11 +155,7 @@ fetch('words.json')
       consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
       const consonantList = Object.keys(consonantCount)
         .sort((a, b) => consonantCount[b] - consonantCount[a])
-        .map(consonant => {
-          const isSearchTerm = searchTerms.some(term => term && term.toLowerCase() === consonant);
-          const classAttribute = isSearchTerm ? 'class="insearchterms"' : '';
-          return `<span ${classAttribute}>${consonant}: ${consonantCount[consonant]}</span>`;
-        })
+        .map(consonant => `${consonant}: ${consonantCount[consonant]}`)
         .join(' | ');
       consonantCountElement.innerHTML += consonantList;
     }
@@ -164,11 +176,7 @@ fetch('words.json')
       vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
       const vowelList = Object.keys(vowelCount)
         .sort((a, b) => vowelCount[b] - vowelCount[a])
-        .map(vowel => {
-          const isSearchTerm = searchTerms.some(term => term && term.toLowerCase() === vowel);
-          const classAttribute = isSearchTerm ? 'class="insearchterms"' : '';
-          return `<span ${classAttribute}>${vowel}: ${vowelCount[vowel]}</span>`;
-        })
+        .map(vowel => `${vowel}: ${vowelCount[vowel]}`)
         .join(' | ');
       vowelCountElement.innerHTML += vowelList;
     }
@@ -176,18 +184,19 @@ fetch('words.json')
     function clearSearchInputs() {
       document.getElementById('includeLetters').value = '';
       document.getElementById('excludeLetters').value = '';
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById(`letter${i}`).value = '';
-        document.getElementById(`excludeLetter${i}`).value = '';
-      }
-    }
-
-    function displayResults(words) {
-      resultsContainer.innerHTML = '<h3>Search Results</h3>';
-      const wordListHTML = words.map(word => `<span>${word}</span>`).join(', ');
-      resultsContainer.innerHTML += wordListHTML;
+      document.getElementById('letter1').value = '';
+      document.getElementById('letter2').value = '';
+      document.getElementById('letter3').value = '';
+      document.getElementById('letter4').value = '';
+      document.getElementById('letter5').value = '';
+      document.getElementById('excludeLetter1').value = '';
+      document.getElementById('excludeLetter2').value = '';
+      document.getElementById('excludeLetter3').value = '';
+      document.getElementById('excludeLetter4').value = '';
+      document.getElementById('excludeLetter5').value = '';
     }
   })
   .catch(error => {
     console.error(error);
+    alert('Failed to load word list. Please try again later.');
   });
