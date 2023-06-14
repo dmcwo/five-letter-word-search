@@ -18,13 +18,11 @@ fetch('words.json')
     const clearButton = document.getElementById('clearButton');
     const consonantCountElement = document.getElementById('consonantCount');
     const vowelCountElement = document.getElementById('vowelCount');
-    let searchTerms = [];
 
     clearButton.addEventListener('click', function () {
       clearSearchInputs();
       countConsonants(wordList);
       countVowels(wordList);
-      applySearchTermsStyle(searchTerms);
       console.log('Clear button clicked'); // Debugging statement
     });
 
@@ -37,7 +35,6 @@ fetch('words.json')
       clearSearchInputs();
       countConsonants(wordList);
       countVowels(wordList);
-      applySearchTermsStyle(searchTerms);
     });
 
     function performSearch() {
@@ -58,9 +55,9 @@ fetch('words.json')
         document.getElementById('excludeLetter4').value,
         document.getElementById('excludeLetter5').value,
       ];
-
+      
       // Store the search terms in an array
-      searchTerms = [includeLetters, excludeLetters, ...letterPosition, ...excludeLetterPositions];
+  const searchTerms = [includeLetters, excludeLetters, ...letterPosition, ...excludeLetterPositions];
 
       // Perform the search
       const filteredWords = wordList.filter(word => {
@@ -97,26 +94,28 @@ fetch('words.json')
       displayResults(filteredWords);
       countConsonants(filteredWords);
       countVowels(filteredWords);
-      applySearchTermsStyle(searchTerms);
+      
+      // Apply CSS class to search terms
+  applySearchTermsStyle(searchTerms);
     }
+  
+  function applySearchTermsStyle(searchTerms) {
+  const resultContainer = document.getElementById('results');
+  const resultItems = resultContainer.getElementsByTagName('li');
 
-    function applySearchTermsStyle(searchTerms) {
-      const resultContainer = document.getElementById('results');
-      const resultItems = resultContainer.getElementsByTagName('li');
+  Array.from(resultItems).forEach(item => {
+    const word = item.textContent.toLowerCase();
 
-      Array.from(resultItems).forEach(item => {
-        const word = item.textContent.toLowerCase();
-
-        // Apply CSS class to letters in the word that match the search terms
-        searchTerms.forEach(term => {
-          if (term && word.includes(term.toLowerCase())) {
-            const regex = new RegExp(term, 'gi');
-            const highlightedWord = word.replace(regex, `<span class="insearchterms">${term}</span>`);
-            item.innerHTML = highlightedWord;
-          }
-        });
-      });
-    }
+    // Apply CSS class to letters in the word that match the search terms
+    searchTerms.forEach(term => {
+      if (term && word.includes(term.toLowerCase())) {
+        const regex = new RegExp(term, 'gi');
+        const highlightedWord = word.replace(regex, `<span class="insearchterms">${term}</span>`);
+        item.innerHTML = highlightedWord;
+      }
+    });
+  });
+}
 
     function displayResults(words) {
       // Clear previous results
@@ -157,7 +156,7 @@ fetch('words.json')
         .sort((a, b) => consonantCount[b] - consonantCount[a])
         .map(consonant => `${consonant}: ${consonantCount[consonant]}`)
         .join(' | ');
-      consonantCountElement.innerHTML += consonantList;
+      consonantCountElement.textContent = consonantList;
     }
 
     function countVowels(words) {
@@ -178,7 +177,7 @@ fetch('words.json')
         .sort((a, b) => vowelCount[b] - vowelCount[a])
         .map(vowel => `${vowel}: ${vowelCount[vowel]}`)
         .join(' | ');
-      vowelCountElement.innerHTML += vowelList;
+      vowelCountElement.textContent = vowelList;
     }
 
     function clearSearchInputs() {
@@ -194,9 +193,26 @@ fetch('words.json')
       document.getElementById('excludeLetter3').value = '';
       document.getElementById('excludeLetter4').value = '';
       document.getElementById('excludeLetter5').value = '';
+
+      // Clear search results
+      resultsContainer.innerHTML = '';
+
+      // Clear total results count
+      const resultCountElement = document.getElementById('resultCount');
+      resultCountElement.textContent = '';
+
+      // Clear consonant count
+      consonantCountElement.innerHTML = '';
+
+      // Clear vowel count
+      vowelCountElement.innerHTML = '';
     }
+
+    // Initialize the page with consonant and vowel counts based on full word list
+    countConsonants(wordList);
+    countVowels(wordList);
   })
   .catch(error => {
     console.error(error);
-    alert('Failed to load word list. Please try again later.');
+    // Handle any error that occurred during the fetch
   });
