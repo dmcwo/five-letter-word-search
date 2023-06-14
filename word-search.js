@@ -100,22 +100,30 @@ fetch('words.json')
     }
 
     function applySearchTermsStyle(searchTerms) {
-      const resultContainer = document.getElementById('results');
-      const resultItems = resultContainer.getElementsByTagName('li');
+  const resultContainer = document.getElementById('results');
+  const resultItems = resultContainer.getElementsByTagName('li');
 
-      Array.from(resultItems).forEach(item => {
-        const word = item.textContent.toLowerCase();
+  Array.from(resultItems).forEach(item => {
+    const word = item.textContent.toLowerCase();
+    let highlightedWord = '';
 
-        // Apply CSS class to letters in the word that match the search terms
-        searchTerms.forEach(term => {
-          if (term && word.includes(term.toLowerCase())) {
-            const regex = new RegExp(term, 'gi');
-            const highlightedWord = word.replace(regex, `<span class="insearchterms">${term}</span>`);
-            item.innerHTML = highlightedWord;
-          }
-        });
-      });
-    }
+    // Apply CSS class to letters in the word that match the search terms
+    Array.from(word).forEach(letter => {
+      const lowerCaseLetter = letter.toLowerCase();
+      const matchedTerm = searchTerms.find(term => term && lowerCaseLetter.includes(term.toLowerCase()));
+
+      if (matchedTerm) {
+        const regex = new RegExp(matchedTerm, 'gi');
+        highlightedWord += `<span class="insearchterms">${letter.replace(regex, matchedTerm)}</span>`;
+      } else {
+        highlightedWord += letter;
+      }
+    });
+
+    item.innerHTML = highlightedWord;
+  });
+}
+
 
     function displayResults(words) {
       // Clear previous results
