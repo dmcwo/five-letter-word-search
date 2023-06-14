@@ -146,47 +146,64 @@ fetch('words.json')
       resultCountElement.textContent = `Total results found: ${words.length}`;
     }
 
-    function countConsonants(words) {
-      // Count the occurrences of consonants in the words
-      const consonantCount = {};
+    //new
+  
+  function countConsonants(words, searchTerms) {
+  // Count the occurrences of consonants in the words
+  const consonantCount = {};
 
-      words.forEach(word => {
-        const consonants = word.replace(/[aeiou]/gi, '');
-        for (let i = 0; i < consonants.length; i++) {
-          const consonant = consonants[i].toLowerCase();
-          consonantCount[consonant] = consonantCount[consonant] ? consonantCount[consonant] + 1 : 1;
-        }
-      });
-
-      // Display the consonant count
-      consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
-      const consonantList = Object.keys(consonantCount)
-        .sort((a, b) => consonantCount[b] - consonantCount[a])
-        .map(consonant => `${consonant}: ${consonantCount[consonant]}`)
-        .join(' | ');
-      consonantCountElement.innerHTML += consonantList;
+  words.forEach(word => {
+    const consonants = word.replace(/[aeiou]/gi, '');
+    for (let i = 0; i < consonants.length; i++) {
+      const consonant = consonants[i].toLowerCase();
+      consonantCount[consonant] = consonantCount[consonant] ? consonantCount[consonant] + 1 : 1;
     }
+  });
 
-    function countVowels(words) {
-      // Count the occurrences of vowels in the words
-      const vowelCount = {};
+  // Display the consonant count
+  consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
+  const consonantList = Object.keys(consonantCount)
+    .sort((a, b) => consonantCount[b] - consonantCount[a])
+    .map(consonant => {
+      if (searchTerms.includes(consonant.toLowerCase())) {
+        return `<span class="insearchterms">${consonant}: ${consonantCount[consonant]}</span>`;
+      } else {
+        return `${consonant}: ${consonantCount[consonant]}`;
+      }
+    })
+    .join(' | ');
+  consonantCountElement.innerHTML += consonantList;
+}
 
-      words.forEach(word => {
-        const vowels = word.replace(/[^aeiou]/gi, '');
-        for (let i = 0; i < vowels.length; i++) {
-          const vowel = vowels[i].toLowerCase();
-          vowelCount[vowel] = vowelCount[vowel] ? vowelCount[vowel] + 1 : 1;
-        }
-      });
+function countVowels(words, searchTerms) {
+  // Count the occurrences of vowels in the words
+  const vowelCount = {};
 
-      // Display the vowel count
-      vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
-      const vowelList = Object.keys(vowelCount)
-        .sort((a, b) => vowelCount[b] - vowelCount[a])
-        .map(vowel => `${vowel}: ${vowelCount[vowel]}`)
-        .join(' | ');
-      vowelCountElement.innerHTML += vowelList;
+  words.forEach(word => {
+    const vowels = word.replace(/[^aeiou]/gi, '');
+    for (let i = 0; i < vowels.length; i++) {
+      const vowel = vowels[i].toLowerCase();
+      vowelCount[vowel] = vowelCount[vowel] ? vowelCount[vowel] + 1 : 1;
     }
+  });
+
+  // Display the vowel count
+  vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
+  const vowelList = Object.keys(vowelCount)
+    .sort((a, b) => vowelCount[b] - vowelCount[a])
+    .map(vowel => {
+      if (searchTerms.includes(vowel.toLowerCase())) {
+        return `<span class="insearchterms">${vowel}: ${vowelCount[vowel]}</span>`;
+      } else {
+        return `${vowel}: ${vowelCount[vowel]}`;
+      }
+    })
+    .join(' | ');
+  vowelCountElement.innerHTML += vowelList;
+}
+
+  
+  //endnew
 
     function clearSearchInputs() {
       document.getElementById('includeLetters').value = '';
