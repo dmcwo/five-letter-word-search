@@ -55,9 +55,9 @@ fetch('words.json')
         document.getElementById('excludeLetter4').value,
         document.getElementById('excludeLetter5').value,
       ];
-      
+
       // Store the search terms in an array
-  const searchTerms = [includeLetters, excludeLetters, ...letterPosition, ...excludeLetterPositions];
+      const searchTerms = [includeLetters, excludeLetters, ...letterPosition, ...excludeLetterPositions];
 
       // Perform the search
       const filteredWords = wordList.filter(word => {
@@ -94,28 +94,28 @@ fetch('words.json')
       displayResults(filteredWords);
       countConsonants(filteredWords);
       countVowels(filteredWords);
-      
+
       // Apply CSS class to search terms
-  applySearchTermsStyle(searchTerms);
+      applySearchTermsStyle(searchTerms);
     }
-  
-  function applySearchTermsStyle(searchTerms) {
-  const resultContainer = document.getElementById('results');
-  const resultItems = resultContainer.getElementsByTagName('li');
 
-  Array.from(resultItems).forEach(item => {
-    const word = item.textContent.toLowerCase();
+    function applySearchTermsStyle(searchTerms) {
+      const resultContainer = document.getElementById('results');
+      const resultItems = resultContainer.getElementsByTagName('li');
 
-    // Apply CSS class to letters in the word that match the search terms
-    searchTerms.forEach(term => {
-      if (term && word.includes(term.toLowerCase())) {
-        const regex = new RegExp(term, 'gi');
-        const highlightedWord = word.replace(regex, `<span class="insearchterms">${term}</span>`);
-        item.innerHTML = highlightedWord;
-      }
-    });
-  });
-}
+      Array.from(resultItems).forEach(item => {
+        const word = item.textContent.toLowerCase();
+
+        // Apply CSS class to letters in the word that match the search terms
+        searchTerms.forEach(term => {
+          if (term && word.includes(term.toLowerCase())) {
+            const regex = new RegExp(term, 'gi');
+            const highlightedWord = word.replace(regex, `<span class="insearchterms">${term}</span>`);
+            item.innerHTML = highlightedWord;
+          }
+        });
+      });
+    }
 
     function displayResults(words) {
       // Clear previous results
@@ -156,7 +156,7 @@ fetch('words.json')
         .sort((a, b) => consonantCount[b] - consonantCount[a])
         .map(consonant => `${consonant}: ${consonantCount[consonant]}`)
         .join(' | ');
-      consonantCountElement.textContent = consonantList;
+      consonantCountElement.innerHTML += consonantList;
     }
 
     function countVowels(words) {
@@ -177,7 +177,7 @@ fetch('words.json')
         .sort((a, b) => vowelCount[b] - vowelCount[a])
         .map(vowel => `${vowel}: ${vowelCount[vowel]}`)
         .join(' | ');
-      vowelCountElement.textContent = vowelList;
+      vowelCountElement.innerHTML += vowelList;
     }
 
     function clearSearchInputs() {
