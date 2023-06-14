@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Five Letter Word Search - with list</title>
+  <link rel="stylesheet" href="custom.css"> <!-- Add your custom CSS file here -->
+</head>
+<body>
+  <header>
+    <h1>*5 letter word search - with list</h1>
+  </header>
+
+  <main>
+    <form id="wordSearchForm">
+  
+<h2>Include Letters</h2>
+    <h3>Any letter position:</h3>
+        
+        <label for="includeLetters">Include Letters:</label>
+  <input type="text" id="includeLetters" />
+
+    <h3>Specific letter position:</h3>
+
+    <label for="letter1">1:</label>
+    <input type="text" id="letter1" />
+        
+    <label for="letter2">2:</label>
+    <input type="text" id="letter2" />
+        
+    <label for="letter3">3:</label>
+        <input type="text" id="letter3" />
+        
+    <label for="letter4">4:</label>
+        <input type="text" id="letter4" />
+    
+    <label for="letter5">5:</label>
+        <input type="text" id="letter5" />
+        
+    <h2>Exclude Letters</h2>
+        <h3>Any letter position:</h3>
+        
+            <label for="excludeLetters">Exclude Letters:</label>
+            <input type="text" id="excludeLetters" />
+        
+        <h3>Specific letter position:</h3>
+        
+            <label for="excludeLetter1">Not 1:</label>
+            <input type="text" id="excludeLetter1" />
+        
+            <label for="excludeLetter2">Not 2:</label>
+            <input type="text" id="excludeLetter2" />
+        
+            <label for="excludeLetter3">Not 3:</label>
+            <input type="text" id="excludeLetter3" />
+        
+            <label for="excludeLetter4">Not 4:</label>
+            <input type="text" id="excludeLetter4" />
+        
+            <label for="excludeLetter5">Not 5:</label>
+            <input type="text" id="excludeLetter5" />
+        
+<br>
+  <button type="submit">Search</button>
+        <br>
+<button type="button" id="clearButton">Clear Search</button>
+
+</form>
+
+<div id="resultCount"></div>
+      
+<div id="consonantCount"></div>
+    
+ <div id="vowelCount"></div>
+
+<div id="results"></div>
+
+  </main>
+
+  <footer>
+  </footer>
+
+  <script src="word-search-with-list.js"></script> <!-- Add your custom JavaScript file here -->
+</body>
+</html>
