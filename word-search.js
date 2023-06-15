@@ -190,20 +190,40 @@ fetch('words.json')
       vowelCountElement.innerHTML += vowelList;
     }
 
-    function clearSearchInputs() {
-      document.getElementById('includeLetters').value = '';
-      document.getElementById('excludeLetters').value = '';
-      document.getElementById('letter1').value = '';
-      document.getElementById('letter2').value = '';
-      document.getElementById('letter3').value = '';
-      document.getElementById('letter4').value = '';
-      document.getElementById('letter5').value = '';
-      document.getElementById('excludeLetter1').value = '';
-      document.getElementById('excludeLetter2').value = '';
-      document.getElementById('excludeLetter3').value = '';
-      document.getElementById('excludeLetter4').value = '';
-      document.getElementById('excludeLetter5').value = '';
-    }
+  // clear search inputs
+  
+  function clearSearchInputs() {
+  document.getElementById('includeLetters').value = '';
+  document.getElementById('excludeLetters').value = '';
+  document.getElementById('letter1').value = '';
+  document.getElementById('letter2').value = '';
+  document.getElementById('letter3').value = '';
+  document.getElementById('letter4').value = '';
+  document.getElementById('letter5').value = '';
+  document.getElementById('excludeLetter1').value = '';
+  document.getElementById('excludeLetter2').value = '';
+  document.getElementById('excludeLetter3').value = '';
+  document.getElementById('excludeLetter4').value = '';
+  document.getElementById('excludeLetter5').value = '';
+
+  // Clear search results
+  resultsContainer.innerHTML = '';
+
+  // Clear total results count
+  const resultCountElement = document.getElementById('resultCount');
+  resultCountElement.textContent = '';
+
+  // Clear consonant count
+  consonantCountElement.innerHTML = '';
+
+  // Clear vowel count
+  vowelCountElement.innerHTML = '';
+
+  // Clear likely letters
+  const likelyLettersContainer = document.getElementById('likelyLetters');
+  likelyLettersContainer.innerHTML = '';
+}
+
 
     function applySearchTermsStyle(searchTerms) {
       const inputs = Array.from(document.getElementsByTagName('input'));
