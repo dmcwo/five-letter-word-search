@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function filterWords(letters, extraLetter) {
+    const lettersSet = new Set(letters);
     return allWords.filter(word => {
-      const lettersSet = new Set(letters);
       const wordSet = new Set(word);
 
       for (const letter of wordSet) {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
 
-      return wordSet.has(extraLetter);
+      return !extraLetter || wordSet.has(extraLetter);
     });
   }
 
