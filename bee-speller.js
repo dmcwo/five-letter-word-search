@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const wordsWithMagicLetter = filterWordsWithMagicLetter(allWords, magicLetterInput);
-    const filteredWords = filterWordsWithOnlyGivenLetters(wordsWithMagicLetter, lettersInput);
+    const filteredWords = filterWordsWithGivenLetters(wordsWithMagicLetter, magicLetterInput + lettersInput);
 
     displayWords(filteredWords);
   });
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return words.filter(word => word.includes(magicLetter));
   }
 
-  function filterWordsWithOnlyGivenLetters(words, letters) {
+  function filterWordsWithGivenLetters(words, letters) {
     const lettersSet = new Set(letters);
     return words.filter(word => {
       const wordSet = new Set(word);
