@@ -18,18 +18,18 @@ document.addEventListener('DOMContentLoaded', function () {
     resultDiv.textContent = ''; // Clear previous results
 
     const lettersInput = document.getElementById('lettersInput').value.toLowerCase();
-    const extraLetterInput = document.getElementById('extraLetterInput').value.toLowerCase();
+    const magicLetterInput = document.getElementById('magicLetterInput').value.toLowerCase();
     
     if (lettersInput.length !== 6) {
       alert('Please enter exactly 6 letters.');
       return;
     }
 
-    const filteredWords = filterWords(lettersInput, extraLetterInput);
+    const filteredWords = filterWords(lettersInput, magicLetterInput);
     displayWords(filteredWords);
   });
 
-  function filterWords(letters, extraLetter) {
+  function filterWords(letters, magicLetter) {
     const lettersSet = new Set(letters);
     return allWords.filter(word => {
       const wordSet = new Set(word);
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
 
-      return !extraLetter || wordSet.has(extraLetter);
+      return !magicLetter || wordSet.has(magicLetter);
     });
   }
 
