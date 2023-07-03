@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   const wordForm = document.getElementById('wordForm');
   const resultDiv = document.getElementById('result');
-  const wordsURL = 'words.json';
+  const wordsURL = 'words-all.json';
 
   let allWords = []; // To store the collection of words
 
