@@ -25,13 +25,19 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    const filteredWords = filterWords(lettersInput, magicLetterInput);
+    const wordsWithMagicLetter = filterWordsWithMagicLetter(allWords, magicLetterInput);
+    const filteredWords = filterWordsWithOnlyGivenLetters(wordsWithMagicLetter, lettersInput);
+
     displayWords(filteredWords);
   });
 
-  function filterWords(letters, magicLetter) {
+  function filterWordsWithMagicLetter(words, magicLetter) {
+    return words.filter(word => word.includes(magicLetter));
+  }
+
+  function filterWordsWithOnlyGivenLetters(words, letters) {
     const lettersSet = new Set(letters);
-    return allWords.filter(word => {
+    return words.filter(word => {
       const wordSet = new Set(word);
 
       for (const letter of wordSet) {
@@ -40,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
 
-      return !magicLetter || wordSet.has(magicLetter);
+      return true;
     });
   }
 
