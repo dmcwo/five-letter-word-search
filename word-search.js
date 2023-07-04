@@ -95,78 +95,132 @@ fetch('words.json')
       countConsonants(filteredWords);
       countVowels(filteredWords);
 
-      // Calculate the likely letters
-      const likelyLetters1 = calculateLikelyLetters(filteredWords, 0);
-      const likelyLetters2 = calculateLikelyLetters(filteredWords, 1);
-      const likelyLetters3 = calculateLikelyLetters(filteredWords, 2);
-      const likelyLetters4 = calculateLikelyLetters(filteredWords, 3);
-      const likelyLetters5 = calculateLikelyLetters(filteredWords, 4);
-
-      // Display the likely letters
-      displayLikelyLetters(1, likelyLetters1);
-      displayLikelyLetters(2, likelyLetters2);
-      displayLikelyLetters(3, likelyLetters3);
-      displayLikelyLetters(4, likelyLetters4);
-      displayLikelyLetters(5, likelyLetters5);
+      // Apply CSS class to search terms
+      applySearchTermsStyle(searchTerms);
     }
 
-    function calculateLikelyLetters(wordList, position) {
-      const letterCount = {};
+    function applySearchTermsStyle(searchTerms) {
+  const resultContainer = document.getElementById('results');
+  const resultItems = resultContainer.getElementsByTagName('li');
 
-      // Count the occurrence of each letter at the specified position
-      wordList.forEach(word => {
-        const letter = word.charAt(position).toLowerCase();
-        if (letterCount[letter]) {
-          letterCount[letter]++;
-        } else {
-          letterCount[letter] = 1;
-        }
-      });
+  Array.from(resultItems).forEach(item => {
+    const word = item.textContent.toLowerCase();
+    let highlightedWord = '';
 
-      // Sort the letters by their frequency in descending order
-      const sortedLetters = Object.keys(letterCount).sort((a, b) => letterCount[b] - letterCount[a]);
+    // Apply CSS class to letters in the word that match the search terms
+    Array.from(word).forEach(letter => {
+      const lowerCaseLetter = letter.toLowerCase();
+      const matchedTerm = searchTerms.find(term => term && lowerCaseLetter.includes(term.toLowerCase()));
 
-      // Return the top 5 most frequently occurring letters
-      return sortedLetters.slice(0, 5);
-    }
+      if (matchedTerm) {
+        const regex = new RegExp(matchedTerm, 'gi');
+        highlightedWord += `<span class="insearchterms">${letter.replace(regex, matchedTerm)}</span>`;
+      } else {
+        highlightedWord += letter;
+      }
+    });
 
-    function displayResults(results) {
-      resultsContainer.innerHTML = results.length > 0 ? `<p>Results: ${results.join(', ')}</p>` : '<p>No results found.</p>';
+    item.innerHTML = highlightedWord;
+  });
+}
+
+
+    function displayResults(words) {
+      // Clear previous results
+      resultsContainer.innerHTML = '';
+
+      if (words.length === 0) {
+        resultsContainer.textContent = 'No matching words found.';
+      } else {
+        const list = document.createElement('ul');
+        words.forEach(word => {
+          const listItem = document.createElement('li');
+          listItem.textContent = word;
+          list.appendChild(listItem);
+        });
+        resultsContainer.appendChild(list);
+      }
+
+      // Display the total count
+      const resultCountElement = document.getElementById('resultCount');
+      resultCountElement.textContent = `Total results found: ${words.length}`;
     }
 
     function countConsonants(words) {
-      const consonantRegex = /[bcdfghjklmnpqrstvwxyz]/gi;
-      const consonantCount = words.reduce((count, word) => {
-        return count + (word.match(consonantRegex) || []).length;
-      }, 0);
-      consonantCountElement.textContent = consonantCount;
+      // Count the occurrences of consonants in the words
+      const consonantCount = {};
+
+      words.forEach(word => {
+        const consonants = word.replace(/[aeiou]/gi, '');
+        for (let i = 0; i < consonants.length; i++) {
+          const consonant = consonants[i].toLowerCase();
+          consonantCount[consonant] = consonantCount[consonant] ? consonantCount[consonant] + 1 : 1;
+        }
+      });
+
+      // Display the consonant count
+      consonantCountElement.innerHTML = '<h3>Consonant Count</h3>';
+      const consonantList = Object.keys(consonantCount)
+        .sort((a, b) => consonantCount[b] - consonantCount[a])
+        .map(consonant => `${consonant}: ${consonantCount[consonant]}`)
+        .join(' | ');
+      consonantCountElement.innerHTML += consonantList;
     }
 
     function countVowels(words) {
-      const vowelRegex = /[aeiou]/gi;
-      const vowelCount = words.reduce((count, word) => {
-        return count + (word.match(vowelRegex) || []).length;
-      }, 0);
-      vowelCountElement.textContent = vowelCount;
+      // Count the occurrences of vowels in the words
+      const vowelCount = {};
+
+      words.forEach(word => {
+        const vowels = word.replace(/[^aeiou]/gi, '');
+        for (let i = 0; i < vowels.length; i++) {
+          const vowel = vowels[i].toLowerCase();
+          vowelCount[vowel] = vowelCount[vowel] ? vowelCount[vowel] + 1 : 1;
+        }
+      });
+
+      // Display the vowel count
+      vowelCountElement.innerHTML = '<h3>Vowel Count</h3>';
+      const vowelList = Object.keys(vowelCount)
+        .sort((a, b) => vowelCount[b] - vowelCount[a])
+        .map(vowel => `${vowel}: ${vowelCount[vowel]}`)
+        .join(' | ');
+      vowelCountElement.innerHTML += vowelList;
     }
 
     function clearSearchInputs() {
-      includeLetters.value = '';
-      excludeLetters.value = '';
-      letterPosition.forEach((input, index) => {
-        input.value = '';
-      });
-      excludeLetterPositions.forEach((input, index) => {
-        input.value = '';
-      });
+      document.getElementById('includeLetters').value = '';
+      document.getElementById('excludeLetters').value = '';
+      document.getElementById('letter1').value = '';
+      document.getElementById('letter2').value = '';
+      document.getElementById('letter3').value = '';
+      document.getElementById('letter4').value = '';
+      document.getElementById('letter5').value = '';
+      document.getElementById('excludeLetter1').value = '';
+      document.getElementById('excludeLetter2').value = '';
+      document.getElementById('excludeLetter3').value = '';
+      document.getElementById('excludeLetter4').value = '';
+      document.getElementById('excludeLetter5').value = '';
+
+      // Clear search results
+      resultsContainer.innerHTML = '';
+
+      // Clear total results count
+      const resultCountElement = document.getElementById('resultCount');
+      resultCountElement.textContent = '';
+
+      // Clear consonant count
+      consonantCountElement.innerHTML = '';
+
+      // Clear vowel count
+      vowelCountElement.innerHTML = '';
     }
 
-    function displayLikelyLetters(position, likelyLetters) {
-      const divId = `likelyLetters${position}`;
-      const likelyLettersContainer = document.getElementById(divId);
-      likelyLettersContainer.innerHTML = `Likely Letters ${position}: ${likelyLetters.join(', ')}`;
-    }
+    // Initialize the page with consonant and vowel counts based on full word list
+    countConsonants(wordList);
+    countVowels(wordList);
   })
   .catch(error => {
     console.error(error);
+    // Handle any error that occurred during the fetch
   });
