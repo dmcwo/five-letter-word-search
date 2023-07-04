@@ -11,9 +11,23 @@
     <br>
     <label for="magicLetterInput">Enter a magic letter:</label>
     <input type="text" id="magicLetterInput" maxlength="1" required>
+    <br>
+    <label for="sortOptions">Sort by:</label>
+    <select id="sortOptions">
+      <option value="length">Length</option>
+        <option value="alphabetical">Alphabetical</option>
+    </select>
+    <br>
     <button type="submit">Submit</button>
   </form>
-  <div id="result"></div>
+  <div>
+    <h2>Pangram List</h2>
+    <div id="pangramList"></div>
+  </div>
+  <div>
+    <h2>All Results List</h2>
+    <div id="resultList"></div>
+  </div>
 
   <script src="bee-speller.js"></script>
 </body>

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   const wordForm = document.getElementById('wordForm');
-  const resultDiv = document.getElementById('result');
+  const resultDiv = document.getElementById('resultList');
+  const pangramDiv = document.getElementById('pangramList');
   const wordsURL = 'words-all.json';
 
   let allWords = []; // To store the collection of words
@@ -15,8 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   wordForm.addEventListener('submit', function (event) {
     event.preventDefault();
-    resultDiv.textContent = ''; // Clear previous results
-
     const lettersInput = document.getElementById('lettersInput').value.toLowerCase();
     const magicLetterInput = document.getElementById('magicLetterInput').value.toLowerCase();
     
@@ -28,7 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const wordsWithMagicLetter = filterWordsWithMagicLetter(allWords, magicLetterInput);
     const filteredWords = filterWordsWithGivenLetters(wordsWithMagicLetter, magicLetterInput + lettersInput);
 
-    displayWords(filteredWords);
+    const sortOption = document.getElementById('sortOptions').value || 'length'; // Default to 'length' if no option selected
+    const sortedWords = sortWords(filteredWords, sortOption);
+
+    const pangramList = filterPangrams(sortedWords, magicLetterInput + lettersInput);
+    displayWords(pangramList, pangramDiv);
+    displayWords(sortedWords, resultDiv);
   });
 
   function filterWordsWithMagicLetter(words, magicLetter) {
@@ -50,10 +54,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function displayWords(words) {
-    const resultDiv = document.getElementById('result');
+  function filterPangrams(words, requiredLetters) {
+    return words.filter(word => {
+      const lettersSet = new Set(requiredLetters);
+      for (const letter of word) {
+        lettersSet.delete(letter);
+      }
+      return lettersSet.size === 0;
+    });
+  }
+
+  function sortWords(words, option) {
+    if (option === 'alphabetical') {
+      return words.sort();
+    } else if (option === 'length') {
+      return words.sort((a, b) => b.length - a.length); // Sort by length, longest first
+    } else {
+      return words; // Default to no sorting if the option is not recognized
+    }
+  }
+
+  function displayWords(words, targetDiv) {
+    targetDiv.textContent = ''; // Clear previous results
+
     if (words.length === 0) {
-      resultDiv.textContent = 'No words found with these letters.';
+      targetDiv.textContent = 'No words found with these letters.';
     } else {
       const list = document.createElement('ul');
       words.forEach(word => {
@@ -61,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
         listItem.textContent = word;
         list.appendChild(listItem);
       });
-      resultDiv.appendChild(list);
+      targetDiv.appendChild(list);
     }
   }
 });
